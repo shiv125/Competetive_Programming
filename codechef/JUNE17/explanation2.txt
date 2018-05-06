@@ -1,0 +1,56 @@
+In the second problem, my algorithm:
+
+Time complexity and space complexity are very tight in my case:
+I'm getting TLE.
+
+I found all the prime upto n using seive.
+max no. of primes upto 10**6 are 78650
+let's say n=10**5
+
+I divided a array of size n into 800 equal parts.
+Then I created a dp table of size (78650*800)
+so each bucket have size=120
+where dp[i][R]-dp[i][L-1] gives me sum of all primes upto ith prime between L to R
+
+I created a dictionary of every element(of array) where every elemenet stores all it's primes and their count. 
+suppose if elem=100, lookup[elem]=[[2,2],[5,5]]
+
+maximum no. of distinct primes a no. can have 8, so space complexity is less than O(n*16).
+
+When a query comes, I do the following:
+
+	L,R,X,Y=map(int,sys.stdin.readline().split())
+	fi=binarysearch(all_primes,0,tt-1,X)
+	si=binarysearchfloor(all_primes,0,tt-1,Y)
+	ans=0
+	if fi!=-1:
+		l_b=(L-1)/bucket
+		r_b=(R-1)/bucket
+		if r_b-l_b<=1:
+			for j in range(L-1,R):
+				for k in range(len(lookup[j])):
+					if lookup[j][k][0]>=X and lookup[j][k][0]<=Y:
+						ans+=lookup[j][k][1]
+					if lookup[j][k][0]>Y:
+						break
+		else:
+			if fi!=0:
+				ans+=dp[si][r_b-1]-dp[si][l_b]-(dp[fi][r_b-1]-dp[fi][l_b])
+			else:
+				ans+=dp[si][r_b-1]-dp[si][l_b]
+			R1=(l_b+1)*bucket
+			for j in range(L-1,R1):
+				for k in range(len(lookup[j])):
+					if lookup[j][k][0]>=X and lookup[j][k][0]<=Y:
+						ans+=lookup[j][k][1]
+					if lookup[j][k][0]>Y:
+						break
+			L2=(r_b)*bucket
+			for j in range(L2,R):
+				for k in range(len(lookup[j])):
+					if lookup[j][k][0]>=X and lookup[j][k][0]<=Y:
+						ans+=lookup[j][k][1]
+					if lookup[j][k][0]>Y:
+						break
+
+
